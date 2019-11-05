@@ -67,7 +67,7 @@
     - name: Find Ansible tools
       find:
         path: /usr/local/bin
-        patterns: ansible-*
+        patterns: ansible*
       register: _the_ansible_tools
 
     - name: Set Ansible tools file mode
