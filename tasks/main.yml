@@ -23,6 +23,7 @@
         executable: '{{ the_ansible_pip_path }}'
         extra_args: '--src {{ local_source_directory }}'
         state: latest
+        umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
       when: the_ansible_from_source|bool
 
@@ -31,6 +32,7 @@
         name: ansible
         executable: '{{ the_ansible_pip_path }}'
         state: "{{ (the_ansible_version == 'latest')|ternary('latest', omit) }}"
+        umask: '{{ the_ansible_pip_umask }}'
         version: "{{ (the_ansible_version == 'latest')|ternary(omit, the_ansible_version) }}"
       environment: '{{ the_ansible_pip_environment }}'
       when: not the_ansible_from_source|bool
@@ -40,6 +42,7 @@
         name: '{{ the_ansible_python_packages }}'
         executable: '{{ the_ansible_pip_path }}'
         state: present
+        umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
 
     # FIXME may iterate over the_ansible_modules and use map('extract', ...)
@@ -56,8 +59,23 @@
         name: "{{ item.value|join(' ') }}"
         executable: '{{ the_ansible_pip_path }}'
         state: present
+        umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
       when: item.key in the_ansible_modules and item.value
       with_dict: '{{ the_ansible_modules_python_packages }}'
+
+    - name: Find Ansible tools
+      find:
+        path: /usr/local/bin
+        patterns: ansible-*
+      register: _the_ansible_tools
+
+    - name: Set Ansible tools file mode
+      file:
+        path: '{{ item.path }}'
+        mode: '{{ the_ansible_tools_mode }}'
+      loop: '{{ _the_ansible_tools.files }}'
+      loop_control:
+        label: '{{ item.path }}'
   become: yes
   tags: [ansible, packages]

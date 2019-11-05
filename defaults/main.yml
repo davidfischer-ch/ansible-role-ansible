@@ -50,6 +50,11 @@ the_ansible_python_packages:
 
 the_ansible_pip_environment: '{{ python_pip_environment }}'
 the_ansible_pip_path: '{{ python_pip_path }}'
+the_ansible_pip_umask: '{{ python_pip_umask }}'
+
+# Tools
+
+the_ansible_tools_mode: 0755
 
 # Version
 
