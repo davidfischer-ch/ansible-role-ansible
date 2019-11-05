@@ -1,9 +1,14 @@
 ---
 
-- dynamic_defaults:
-    hostvars: '{{ hostvars[inventory_hostname] }}'
-    defaults: '{{ the_ansible_dynamic_defaults }}'
-    must_match: yes
+- block:
+    - dynamic_defaults:
+        hostvars: '{{ hostvars[inventory_hostname] }}'
+        defaults: '{{ the_ansible_dynamic_defaults }}'
+        must_match: yes
+
+    - assert:
+        that:
+          - the_ansible_version is defined
   tags: [ansible, always]
 
 - block:
@@ -15,24 +20,27 @@
     - name: Install Ansible Python package from source
       pip:
         name: "git+https://github.com/{{ the_ansible_github_username }}/ansible.git@{{ the_ansible_version|regex_replace('^latest$', 'devel') }}#egg=ansible"
-        executable: pip2
+        executable: '{{ the_ansible_pip_path }}'
         extra_args: '--src {{ local_source_directory }}'
         state: latest
+      environment: '{{ the_ansible_pip_environment }}'
       when: the_ansible_from_source|bool
 
     - name: Install Ansible Python package from release
       pip:
         name: ansible
-        executable: pip2
+        executable: '{{ the_ansible_pip_path }}'
         state: "{{ (the_ansible_version == 'latest')|ternary('latest', omit) }}"
         version: "{{ (the_ansible_version == 'latest')|ternary(omit, the_ansible_version) }}"
+      environment: '{{ the_ansible_pip_environment }}'
       when: not the_ansible_from_source|bool
 
     - name: Install Ansible Python packages
       pip:
         name: '{{ the_ansible_python_packages }}'
-        executable: pip2
+        executable: '{{ the_ansible_pip_path }}'
         state: present
+      environment: '{{ the_ansible_pip_environment }}'
 
     # FIXME may iterate over the_ansible_modules and use map('extract', ...)
 
@@ -46,8 +54,9 @@
     - name: Install Ansible modules Python package
       pip:
         name: "{{ item.value|join(' ') }}"
-        executable: pip2
+        executable: '{{ the_ansible_pip_path }}'
         state: present
+      environment: '{{ the_ansible_pip_environment }}'
       when: item.key in the_ansible_modules and item.value
       with_dict: '{{ the_ansible_modules_python_packages }}'
   become: yes
