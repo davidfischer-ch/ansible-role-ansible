@@ -76,6 +76,6 @@
         mode: '{{ the_ansible_tools_mode }}'
       loop: '{{ _the_ansible_tools.files }}'
       loop_control:
-        label: '{{ item.path }} mode {{ the_ansible_tools_mode }}'
+        label: '{{ item.path }}'
   become: yes
   tags: [ansible, packages]
