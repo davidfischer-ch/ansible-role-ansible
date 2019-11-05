@@ -1,4 +1,5 @@
 the_ansible_dynamic_defaults:
+
   centos:
     the_ansible_packages:
       # - keychain
@@ -8,6 +9,7 @@ the_ansible_dynamic_defaults:
       - openssl-devel
       - sshpass
       - xz-devel
+
   linux:
     the_ansible_packages:
       - keychain
@@ -17,7 +19,21 @@ the_ansible_dynamic_defaults:
       - libssl-dev
       - openssl
       - sshpass
+
+  redhat:
+    the_ansible_packages:
+      # - keychain
+      - libffi
+      - libffi-devel
+      - openssl
+      - openssl-devel
+      - sshpass
+      - xz-devel
+
 the_ansible_github_username: davidfischer-ch
+
+# Packages
+
 the_ansible_modules: []
 the_ansible_modules_packages:
   amazon: []
@@ -26,7 +42,16 @@ the_ansible_modules_python_packages:
     - awscli
     - boto
     - boto3
+
 the_ansible_python_packages:
   - dateutils
+
+# PIP
+
+the_ansible_pip_environment: '{{ python_pip_environment }}'
+the_ansible_pip_path: '{{ python_pip_path }}'
+
+# Version
+
 # the_ansible_version: latest
 the_ansible_from_source: no
