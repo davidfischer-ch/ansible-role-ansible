@@ -64,7 +64,7 @@ the_ansible_pip_umask: '{{ python_pip_umask }}'
 
 # Tools
 
-the_ansible_tools_mode: 0755
+the_ansible_tools_mode: '755'
 
 # Version
 
