@@ -10,6 +10,16 @@ the_ansible_dynamic_defaults:
       - openssl
       - sshpass
 
+  ubuntu-22.*:
+    the_ansible_packages:
+      - keychain
+      - libffi-dev
+      - libffi7
+      - liblzma-dev
+      - libssl-dev
+      - openssl
+      - sshpass
+
   centos:
     the_ansible_packages:
       # - keychain
