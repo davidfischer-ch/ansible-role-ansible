@@ -1,3 +1,5 @@
+---
+
 the_ansible_dynamic_defaults:
 
   ubuntu-20.*:
@@ -15,6 +17,16 @@ the_ansible_dynamic_defaults:
       - keychain
       - libffi-dev
       - libffi7
+      - liblzma-dev
+      - libssl-dev
+      - openssl
+      - sshpass
+
+  ubuntu-24.*:
+    the_ansible_packages:
+      - keychain
+      - libffi-dev
+      - libffi8
       - liblzma-dev
       - libssl-dev
       - openssl
@@ -39,16 +51,6 @@ the_ansible_dynamic_defaults:
       - openssl-devel
       - sshpass
       - xz-devel
-
-  linux:
-    the_ansible_packages:
-      - keychain
-      - libffi-dev
-      - libffi6
-      - liblzma-dev
-      - libssl-dev
-      - openssl
-      - sshpass
 
 the_ansible_github_username: davidfischer-ch
 
@@ -79,4 +81,6 @@ the_ansible_tools_mode: '755'
 # Version
 
 # the_ansible_version: latest
-the_ansible_from_source: no
+the_ansible_from_source: false
+
+...

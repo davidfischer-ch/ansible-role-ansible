@@ -4,21 +4,21 @@
     - dynamic_defaults:
         hostvars: '{{ hostvars[inventory_hostname] }}'
         defaults: '{{ the_ansible_dynamic_defaults }}'
-        must_match: yes
+        must_match: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - the_ansible_version is defined
   tags: [ansible, always]
 
 - block:
     - name: Install Ansible packages
-      package:
+      ansible.builtin.package:
         name: '{{ the_ansible_packages }}'
         state: present
 
     - name: Install Ansible Python package from source
-      pip:
+      ansible.builtin.pip:
         name: "git+https://github.com/{{ the_ansible_github_username }}/ansible.git@{{ the_ansible_version|regex_replace('^latest$', 'devel') }}#egg=ansible"
         executable: '{{ the_ansible_pip_path }}'
         extra_args: '--src {{ local_source_directory }}'
@@ -28,7 +28,7 @@
       when: the_ansible_from_source|bool
 
     - name: Install Ansible Python package from release
-      pip:
+      ansible.builtin.pip:
         name: ansible
         executable: '{{ the_ansible_pip_path }}'
         state: "{{ (the_ansible_version == 'latest')|ternary('latest', omit) }}"
@@ -38,7 +38,7 @@
       when: not the_ansible_from_source|bool
 
     - name: Install Ansible Python packages
-      pip:
+      ansible.builtin.pip:
         name: '{{ the_ansible_python_packages }}'
         executable: '{{ the_ansible_pip_path }}'
         state: present
@@ -48,14 +48,14 @@
     # FIXME may iterate over the_ansible_modules and use map('extract', ...)
 
     - name: Install Ansible modules packages
-      package:
+      ansible.builtin.package:
         name: "{{ item.value|join(' ') }}"
         state: present
       when: item.key in the_ansible_modules and item.value
       with_dict: '{{ the_ansible_modules_packages }}'
 
     - name: Install Ansible modules Python package
-      pip:
+      ansible.builtin.pip:
         name: "{{ item.value|join(' ') }}"
         executable: '{{ the_ansible_pip_path }}'
         state: present
@@ -65,17 +65,19 @@
       with_dict: '{{ the_ansible_modules_python_packages }}'
 
     - name: Find Ansible tools
-      find:
+      ansible.builtin.find:
         path: /usr/local/bin
         patterns: ansible*
       register: _the_ansible_tools
 
     - name: Set Ansible tools file mode
-      file:
+      ansible.builtin.file:
         path: '{{ item.path }}'
         mode: '{{ the_ansible_tools_mode }}'
       loop: '{{ _the_ansible_tools.files }}'
       loop_control:
         label: '{{ item.path }}'
-  become: yes
+  become: true
   tags: [ansible, packages]
+
+...

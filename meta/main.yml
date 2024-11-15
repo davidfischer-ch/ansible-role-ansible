@@ -11,3 +11,5 @@ dependencies:
   - role: local-source
     tags: [ansible, dependencies]
     when: the_ansible_from_source|bool
+
+...
