@@ -52,7 +52,9 @@
         name: "{{ item.value|join(' ') }}"
         state: present
       when: item.key in the_ansible_modules and item.value
-      with_dict: '{{ the_ansible_modules_packages }}'
+      loop: '{{ the_ansible_modules_packages | dict2items }}'
+      loop_control:
+        label: '{{ item.key }}'
 
     - name: Install Ansible modules Python package
       ansible.builtin.pip:
@@ -62,7 +64,9 @@
         umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
       when: item.key in the_ansible_modules and item.value
-      with_dict: '{{ the_ansible_modules_python_packages }}'
+      loop: '{{ the_ansible_modules_python_packages | dict2items }}'
+      loop_control:
+        label: '{{ item.key }}'
 
     - name: Find Ansible tools
       ansible.builtin.find:
