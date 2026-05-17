@@ -70,6 +70,7 @@ the_ansible_python_packages:
 
 # PIP
 
+the_ansible_pip_break_system_packages: '{{ python_pip_break_system_packages }}'
 the_ansible_pip_environment: '{{ python_pip_environment }}'
 the_ansible_pip_path: '{{ python_pip_path }}'
 the_ansible_pip_umask: '{{ python_pip_umask }}'

@@ -20,6 +20,7 @@
     - name: Install Ansible Python package from source
       ansible.builtin.pip:
         name: "git+https://github.com/{{ the_ansible_github_username }}/ansible.git@{{ the_ansible_version|regex_replace('^latest$', 'devel') }}#egg=ansible"
+        break_system_packages: '{{ the_ansible_pip_break_system_packages }}'
         executable: '{{ the_ansible_pip_path }}'
         extra_args: '--src {{ local_source_directory }}'
         state: latest
@@ -31,6 +32,7 @@
       ansible.builtin.pip:
         name: ansible
         executable: '{{ the_ansible_pip_path }}'
+        break_system_packages: '{{ the_ansible_pip_break_system_packages }}'
         state: "{{ (the_ansible_version == 'latest')|ternary('latest', omit) }}"
         umask: '{{ the_ansible_pip_umask }}'
         version: "{{ (the_ansible_version == 'latest')|ternary(omit, the_ansible_version) }}"
@@ -41,6 +43,7 @@
       ansible.builtin.pip:
         name: '{{ the_ansible_python_packages }}'
         executable: '{{ the_ansible_pip_path }}'
+        break_system_packages: '{{ the_ansible_pip_break_system_packages }}'
         state: present
         umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
@@ -60,6 +63,7 @@
       ansible.builtin.pip:
         name: "{{ item.value|join(' ') }}"
         executable: '{{ the_ansible_pip_path }}'
+        break_system_packages: '{{ the_ansible_pip_break_system_packages }}'
         state: present
         umask: '{{ the_ansible_pip_umask }}'
       environment: '{{ the_ansible_pip_environment }}'
